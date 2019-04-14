@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="jumbotron jumbotron">
+    <h1 class="display-4">Rooms</h1>
+</div>
+
+<div class="row">
+    <div class="col-sm-4">
+        Rooms
+        <br> <br>
+        <ul class="list-group">
+            <li class="list-group-item active">Room Active</li>
+            <li class="list-group-item">Room 1</li>
+            <li class="list-group-item">Room 2</li>
+        </ul>
+
+    </div>
+    <div class="col-sm-8">
+        <p class="text-center">
+            Chat
+        </p>
+
+        <div class="card">
+            <div class="card-header">
+                Name Room
+            </div>
+            <div class="card-body">
+
+                <ul id="chat" class="list-unstyled">
+                        <li>Message</li>
+                        <li>Message</li>
+                        <li>Message</li>
+                </ul>
+
+
+
+
+
+                <form id="form" action=""  method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input id="message" autofocus class="form-control" type="text" placeholder="Message">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn input-group-text" >Send</button>
+                        </div>
+                    </div>
+                </form>
+                    
+            </div>
+            <div class="card-footer">
+                Date Room
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
+
+
+
+{% block script %}
+
+
+<script>
+
+    var chat = $("#chat")
+    var form = $("#form")
+    var msg  = $("#message")
+    var loc  = window.location
+    
+    var start = 'ws://'
+    if(loc.host == 'https://'){
+        start = 'wss://'
+    }
+
+    var endpoint = start + loc.host + '/message'
+    console.log(endpoint)
+    var socket = new WebSocket(endpoint)
+
+    form.submit(function(event){
+        chat.append("<li>" + msg.val() + "</li>")
+        console.log(msg.val())
+        event.preventDefault()
+        form[0].reset()
+    });
+
+
+
+    
+
+    socket.onmessage(function(event){
+        console.log("Message",event)
+    })
+    socket.onopen(function(event){
+        console.log('Open',event)
+    })
+    socket.onclose(function(event){
+        console.log('Close',event)
+    })
+
+
+
+
+
+
+</script>
+{% endblock script %}
